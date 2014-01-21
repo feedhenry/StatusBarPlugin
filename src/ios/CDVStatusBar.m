@@ -96,19 +96,35 @@ static const void *kStatusBarStyle = &kStatusBarStyle;
     // observe the statusBarHidden property
     [[UIApplication sharedApplication] addObserver:self forKeyPath:@"statusBarHidden" options:NSKeyValueObservingOptionNew context:NULL];
     
-    _statusBarOverlaysWebView = YES; // default
-    
+  _statusBarOverlaysWebView = YES; // default
+  if ([self settingForKey:@"StatusBarOverlaysWebView"]) {
+    BOOL statuBarOverlay = [[self settingForKey:@"StatusBarOverlaysWebView"] boolValue];
+    [self setStatusBarOverlaysWebView:statuBarOverlay];
+  } else {
     NSString            *systemVersion = [[UIDevice currentDevice] systemVersion];
     NSComparisonResult  order = [[systemVersion substringToIndex:[@"7.0" length]] compare: @"7.0" options: NSNumericSearch];
     
-	if (order == NSOrderedSame || order == NSOrderedDescending)
-        [self setStatusBarOverlaysWebView:NO];
+    if (order == NSOrderedSame || order == NSOrderedDescending)
+      [self setStatusBarOverlaysWebView:NO];
+
+  }
     
+  
     CGRect frame = [[UIApplication sharedApplication] statusBarFrame];
     
     _statusBarBackgroundView = [[UIView alloc] initWithFrame:frame];
     _statusBarBackgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin);
     [self.webView.superview addSubview:_statusBarBackgroundView];
+    if([self settingForKey:@"StatusBarBackgroundColor"]){
+      [self _backgroundColorByHexString:[self settingForKey:@"StatusBarBackgroundColor"]];
+    }
+  if ([self settingForKey:@"StatusBarStyle"]) {
+    if ([[self settingForKey:@"StatusBarStyle"] isEqualToString:@"Default"]) {
+      [self setStyleForStatusBar:UIStatusBarStyleDefault];
+    } else {
+      [self setStyleForStatusBar:UIStatusBarStyleLightContent];
+    }
+  }
 }
 
 - (void) _ready:(CDVInvokedUrlCommand*)command
