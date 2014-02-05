@@ -14,12 +14,13 @@
         <engine name="cordova" version=">=3.0.0" />
     </engines>
 
-    <js-module src="www/statusbar.js" name="statusbar">
-        <clobbers target="window.StatusBar" />
-    </js-module>
 
     <!-- ios -->
     <platform name="ios">
+        <js-module src="www/statusbar.js" name="statusbar">
+            <clobbers target="window.StatusBar" />
+        </js-module>
+
         <config-file target="config.xml" parent="/*">
             <feature name="StatusBar">
                 <param name="ios-package" value="CDVStatusBar" onload="true" />
